@@ -4,6 +4,8 @@ This cookbook demos how Chef can dynamically build a static site using local mac
 
 In this demo, the site is installing Azure PowerShell plugins and running a command to dump all of the images to a CSV file. While this could be done via an API call, the purpose of this cookbook is to demo create a static site with local information.
 
+[Demo Site](http://chef-azure-site.cloudapp.net/)
+
 Requirements
 ------------
  - Chocolatey
