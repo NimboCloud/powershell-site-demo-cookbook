@@ -1,0 +1,130 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="./favicon.ico">
+
+    <title>Welcome to <%= @site_name %></title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="./assets/css/bootstrap.min.css" rel="stylesheet">
+    <link href="./assets/js/bootstrap.min.js">
+
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+
+    <!-- bootstrap widget theme -->
+    <link rel="stylesheet" href="./assets/tablesorter/css/theme.bootstrap.css">
+    <!-- tablesorter plugin -->
+    <script src="./assets/js/jquery.tablesorter.js"></script>
+    <!-- tablesorter widget file - loaded after the plugin -->
+    <script src="./assets/js/jquery.tablesorter.widgets.js"></script>
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <script>
+    $(function() {
+
+      // NOTE: $.tablesorter.theme.bootstrap is ALREADY INCLUDED in the jquery.tablesorter.widgets.js
+      // file; it is included here to show how you can modify the default classes
+      $.tablesorter.themes.bootstrap = {
+        // these classes are added to the table. To see other table classes available,
+        // look here: http://getbootstrap.com/css/#tables
+        table      : 'table table-bordered',
+        caption    : 'caption',
+        header     : 'bootstrap-header', // give the header a gradient background
+        footerRow  : '',
+        footerCells: '',
+        icons      : '', // add "icon-white" to make them white; this icon class is added to the <i> in the header
+        sortNone   : 'bootstrap-icon-unsorted',
+        sortAsc    : 'icon-chevron-up glyphicon glyphicon-chevron-up',     // includes classes for Bootstrap v2 & v3
+        sortDesc   : 'icon-chevron-down glyphicon glyphicon-chevron-down', // includes classes for Bootstrap v2 & v3
+        active     : '', // applied when column is sorted
+        hover      : '', // use custom css here - bootstrap class may not override it
+        filterRow  : '', // filter row class
+        even       : '', // odd row zebra striping
+        odd        : ''  // even row zebra striping
+      };
+
+      // call the tablesorter plugin and apply the uitheme widget
+      $("table").tablesorter({
+        // this will apply the bootstrap theme if "uitheme" widget is included
+        // the widgetOptions.uitheme is no longer required to be set
+        theme : "bootstrap",
+
+        widthFixed: true,
+
+        headerTemplate : '{content} {icon}', // new in v2.7. Needed to add the bootstrap icon!
+
+        // widget code contained in the jquery.tablesorter.widgets.js file
+        // use the zebra stripe widget if you plan on hiding any rows (filter widget)
+        widgets : [ "uitheme", "filter", "zebra" ],
+
+        widgetOptions : {
+          // using the default zebra striping class name, so it actually isn't included in the theme variable above
+          // this is ONLY needed for bootstrap theming if you are using the filter widget, because rows are hidden
+          zebra : ["even", "odd"],
+
+          // reset filters button
+          filter_reset : ".reset"
+
+          // set the uitheme widget to use the bootstrap theme class names
+          // this is no longer required, if theme is set
+          // ,uitheme : "bootstrap"
+
+        }
+      })
+
+    });
+    </script>
+  </head>
+
+  <body>
+
+    <div class="container">
+      <div class="header">
+        <nav>
+          <ul class="nav nav-pills pull-right">
+            <li role="presentation" class="active"><a href="#">Home</a></li>
+            <li role="presentation"><a href="#">About</a></li>
+            <li role="presentation"><a href="#">Contact</a></li>
+          </ul>
+        </nav>
+        <h3 class="text-muted"><%= @site_name %></h3>
+      </div>
+
+      <div class="jumbotron">
+        <h1>Azure VM Images</h1>
+        <p class="lead">The below table contains all of the Azure VM images along with the ImageID. The table is periodically dynamically built throughout the day using a Chef cookbook.</p>
+        <p>Last build: <%= node['ohai_time'] %> </p>
+      </div>
+      <div class="row marketing">
+        <div class="col-lg-12">
+        <table class="tablesorter">
+          <thead><tr><th>Name</th><th>OS</th><th>Image ID</th></tr><thead>
+          <tbody>
+          <% x = 0 %>
+          <% unless @arImages.nil? %>
+          <% @arImages.each do |anImage|
+            if x > 1%>
+            <tr><% unless anImage.nil? %><td><%= anImage[7] -%></td><td><%= anImage[1] -%></td><td><%= anImage[0] -%></td><% end %></tr>
+            <% end %>
+            <% x=x+1 %>
+          <% end %>
+        <% end %>
+      </tbody>
+      </table>
+      </div>
+    </div>
+      <footer class="footer">
+        <p><a href='http://nimbo.com'>&copy; Nimbo</a> 2014 | Created by <a href='https://twitter.com/mlapida'>@mlapdai</a></p>
+      </footer>
+    </div> <!-- /container -->
+  </body>
+</html>
